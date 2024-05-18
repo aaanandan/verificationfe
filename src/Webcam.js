@@ -79,7 +79,7 @@ const WebcamOverlay = () => {
         formData.append('timestamp', new Date().toLocaleString());
 
         try {
-            const response = await axios.post(process.env.BE_SERVER, formData, {
+            const response = await axios.post(process.env.REACT_APP_BE_SERVER, formData, {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'multipart/form-data',
