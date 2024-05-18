@@ -15,9 +15,9 @@ const WebcamOverlay = () => {
     });
 
     const videoConstraints = {
-        width: 1280,
-        height: 720,
         facingMode: { exact: "environment" },
+        width: 720,
+        height: 1280
     };
 
     const capture = () => {
@@ -25,7 +25,7 @@ const WebcamOverlay = () => {
         const ctx = canvas.getContext('2d');
         const video = webcamRef.current.video;
 
-        ctx.drawImage(video, 0, 0); // canvas.width, canvas.height
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         ctx.fillStyle = 'white';
         ctx.font = '24px sans-serif';
@@ -111,13 +111,13 @@ const WebcamOverlay = () => {
                 audio={false}
                 ref={webcamRef}
                 screenshotFormat="image/jpeg"
-                width={1280}
-                height={720}
+                width={720}
+                height={1280}
                 videoConstraints={videoConstraints}
                 style={styles.webcam}
-                forceScreenshotSourceSize={true}
+            // forceScreenshotSourceSize={true}
             />
-            <canvas ref={canvasRef} width={1280} height={720} style={styles.canvas} />
+            <canvas ref={canvasRef} width={720} height={1280} style={styles.canvas} />
             <div style={styles.overlay}>
                 <h1 style={styles.overlayText}>{`Item: ${overlayText.item}`}</h1>
                 <h1 style={styles.overlayText}>{`Verified weight: ${overlayText.verifiedWeight} kg`}</h1>
@@ -167,8 +167,8 @@ const WebcamOverlay = () => {
 const styles = {
     container: {
         position: 'relative',
-        width: '100%',
-        height: '100%',
+        width: '720px',
+        height: '1280px',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
