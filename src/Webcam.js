@@ -79,8 +79,7 @@ const WebcamOverlay = () => {
         formData.append('timestamp', new Date().toLocaleString());
 
         try {
-            //http://localhost:8080/upload
-            const response = await axios.post('http://foodverification.onrender.com:8080/upload', formData, {
+            const response = await axios.post(process.env.BE_SERVER, formData, {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'multipart/form-data',
