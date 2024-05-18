@@ -15,8 +15,6 @@ const WebcamOverlay = () => {
     });
 
     const videoConstraints = {
-        width: 1280,
-        height: 720,
         facingMode: { exact: "environment" },
     };
 
@@ -116,7 +114,7 @@ const WebcamOverlay = () => {
                 videoConstraints={videoConstraints}
                 style={styles.webcam}
             />
-            <canvas ref={canvasRef} width={1280} height={720} style={styles.canvas} />
+            <canvas ref={canvasRef} style={styles.canvas} />
             <div style={styles.overlay}>
                 <h1 style={styles.overlayText}>{`Item: ${overlayText.item}`}</h1>
                 <h1 style={styles.overlayText}>{`Verified weight: ${overlayText.verifiedWeight} kg`}</h1>
@@ -214,7 +212,7 @@ const styles = {
         border: '2px solid #fff',
     },
     capturedImage: {
-        width: '400px',
+        width: 'auto',
         height: 'auto',
     },
     form: {
