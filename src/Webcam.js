@@ -25,7 +25,7 @@ const WebcamOverlay = () => {
         const ctx = canvas.getContext('2d');
         const video = webcamRef.current.video;
 
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0); // canvas.width, canvas.height
 
         ctx.fillStyle = 'white';
         ctx.font = '24px sans-serif';
@@ -126,11 +126,7 @@ const WebcamOverlay = () => {
                 <h1 style={styles.overlayText}>{`Timestamp: ${overlayText.timestamp}`}</h1>
             </div>
             <button onClick={capture} style={styles.captureButton}>Capture & Save</button>
-            {capturedImage && (
-                <div style={styles.capturedImageContainer}>
-                    <img src={capturedImage} alt="Captured" style={styles.capturedImage} />
-                </div>
-            )}
+
             <form onSubmit={handleSubmit} style={styles.form}>
                 <div style={styles.formGroup}>
                     <label>
@@ -158,6 +154,12 @@ const WebcamOverlay = () => {
                 </div>
                 <button type="submit" style={styles.submitButton}>Update Text</button>
             </form>
+
+            {capturedImage && (
+                <div style={styles.capturedImageContainer}>
+                    <img src={capturedImage} alt="Captured" style={styles.capturedImage} />
+                </div>
+            )}
         </div>
     );
 };
@@ -174,7 +176,6 @@ const styles = {
     webcam: {
         // position: 'absolute',
         margin: 20,
-
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'
@@ -184,10 +185,10 @@ const styles = {
     },
     overlay: {
         position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
+        top: 200,
+        left: 100,
+        // width: '100%',
+        // height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -207,12 +208,14 @@ const styles = {
         left: '50%',
         // transform: 'translateX(-50%)',
         padding: '10px 20px',
-        fontSize: '16px',
+        fontSize: '30px',
         backgroundColor: '#ff0100',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
+        width: '80%',
+        height: '10%'
     },
     capturedImageContainer: {
         // position: 'absolute',
@@ -221,8 +224,8 @@ const styles = {
         border: '2px solid #fff',
     },
     capturedImage: {
-        width: '100%',
-        height: 'auto',
+        width: 'auto%',
+        height: '100%',
     },
     form: {
         // position: 'absolute',
@@ -244,15 +247,18 @@ const styles = {
         marginLeft: '10px',
         padding: '5px',
         fontSize: '16px',
+        width: '300px'
     },
     submitButton: {
         padding: '10px 20px',
-        fontSize: '16px',
+        fontSize: '30px',
         backgroundColor: '#28a745',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
+        width: '80%',
+        height: '10%'
     },
 };
 
