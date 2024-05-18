@@ -8,16 +8,16 @@ const WebcamOverlay = () => {
     const [capturedImage, setCapturedImage] = useState(null);
     const [overlayText, setOverlayText] = useState({
         item: '',
-        verifiedWeight: '',
-        emptyWeight: '',
-        actualWeight: '',
-        timestamp: '',
+        verifiedWeight: '0',
+        emptyWeight: '0',
+        actualWeight: '0',
+        timestamp: '0',
     });
 
     const videoConstraints = {
         width: 1280,
         height: 720,
-        facingMode: 'user',
+        facingMode: { exact: "environment" },
     };
 
     const capture = () => {
@@ -73,9 +73,9 @@ const WebcamOverlay = () => {
         const formData = new FormData();
         formData.append('image', file);
         formData.append('item', overlayText.item || "");
-        formData.append('verifiedWeight', overlayText.verifiedWeight || "");
-        formData.append('emptyWeight', overlayText.emptyWeight || "");
-        formData.append('actualWeight', overlayText.actualWeight || "");
+        formData.append('verifiedWeight', overlayText.verifiedWeight || "0");
+        formData.append('emptyWeight', overlayText.emptyWeight || "0");
+        formData.append('actualWeight', overlayText.actualWeight || "0");
         formData.append('timestamp', new Date().toLocaleString());
 
         try {
@@ -124,7 +124,7 @@ const WebcamOverlay = () => {
                 <h1 style={styles.overlayText}>{`Actual weight: ${overlayText.actualWeight} kg`}</h1>
                 <h1 style={styles.overlayText}>{`Timestamp: ${overlayText.timestamp}`}</h1>
             </div>
-            <button onClick={capture} style={styles.captureButton}>Capture</button>
+            <button onClick={capture} style={styles.captureButton}>Capture & Save</button>
             {capturedImage && (
                 <div style={styles.capturedImageContainer}>
                     <img src={capturedImage} alt="Captured" style={styles.capturedImage} />
@@ -133,29 +133,29 @@ const WebcamOverlay = () => {
             <form onSubmit={handleSubmit} style={styles.form}>
                 <div style={styles.formGroup}>
                     <label>
-                        Item:
+                        Item name:
                         <input type="text" name="item" required style={styles.input} />
                     </label>
                 </div>
                 <div style={styles.formGroup}>
                     <label>
-                        Verified weight in kg:
-                        <input type="number" name="verifiedWeight" required style={styles.input} />
+                        Verified weight:
+                        <input type="number" name="verifiedWeight" required style={styles.input} defaultValue={0} />
                     </label>
                 </div>
                 <div style={styles.formGroup}>
                     <label>
                         Empty weight:
-                        <input type="number" name="emptyWeight" required style={styles.input} />
+                        <input type="number" name="emptyWeight" required style={styles.input} defaultValue={0} />
                     </label>
                 </div>
                 <div style={styles.formGroup}>
                     <label>
                         Actual weight:
-                        <input type="number" name="actualWeight" required style={styles.input} />
+                        <input type="number" name="actualWeight" required style={styles.input} defaultValue={0} />
                     </label>
                 </div>
-                <button type="submit" style={styles.submitButton}>Update Overlay</button>
+                <button type="submit" style={styles.submitButton}>Update Text</button>
             </form>
         </div>
     );
@@ -195,26 +195,26 @@ const styles = {
         margin: 0,
     },
     captureButton: {
-        position: 'absolute',
+        // position: 'absolute',
         bottom: 20,
         left: '50%',
-        transform: 'translateX(-50%)',
+        // transform: 'translateX(-50%)',
         padding: '10px 20px',
         fontSize: '16px',
-        backgroundColor: '#007bff',
+        backgroundColor: '#ff0100',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
     },
     capturedImageContainer: {
-        position: 'absolute',
+        // position: 'absolute',
         top: 20,
         right: 20,
         border: '2px solid #fff',
     },
     capturedImage: {
-        width: '150px',
+        width: '400px',
         height: 'auto',
     },
     form: {
