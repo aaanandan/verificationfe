@@ -15,6 +15,8 @@ const WebcamOverlay = () => {
     });
 
     const videoConstraints = {
+        width: 1280,
+        height: 720,
         facingMode: { exact: "environment" },
     };
 
@@ -113,8 +115,9 @@ const WebcamOverlay = () => {
                 height={720}
                 videoConstraints={videoConstraints}
                 style={styles.webcam}
+                forceScreenshotSourceSize={true}
             />
-            <canvas ref={canvasRef} style={styles.canvas} />
+            <canvas ref={canvasRef} width={1280} height={720} style={styles.canvas} />
             <div style={styles.overlay}>
                 <h1 style={styles.overlayText}>{`Item: ${overlayText.item}`}</h1>
                 <h1 style={styles.overlayText}>{`Verified weight: ${overlayText.verifiedWeight} kg`}</h1>
@@ -164,11 +167,17 @@ const styles = {
         position: 'relative',
         width: '100%',
         height: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     webcam: {
         // position: 'absolute',
-        top: 0,
-        left: 0,
+        margin: 20,
+
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     canvas: {
         display: 'none',
@@ -194,7 +203,7 @@ const styles = {
     },
     captureButton: {
         // position: 'absolute',
-        bottom: 20,
+        margin: 20,
         left: '50%',
         // transform: 'translateX(-50%)',
         padding: '10px 20px',
@@ -212,7 +221,7 @@ const styles = {
         border: '2px solid #fff',
     },
     capturedImage: {
-        width: 'auto',
+        width: '100%',
         height: 'auto',
     },
     form: {
@@ -223,6 +232,10 @@ const styles = {
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         padding: '20px',
         borderRadius: '10px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     formGroup: {
         marginBottom: '10px',
