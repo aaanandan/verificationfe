@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import axios from 'axios';
 
@@ -7,13 +7,42 @@ const WebcamOverlay = () => {
     const canvasRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
     const [overlayText, setOverlayText] = useState({
-        item: '',
+        foodName: '',
+        part: '-',
         verifiedWeight: '0',
-        emptyWeight: '0',
-        actualWeight: '0',
+        isEmpty: '0',
         timestamp: '0',
     });
 
+    const [foodNames, setFoodNames] = useState([]);
+    const [part, setPart] = useState([]);
+    const [isEmpty, setIsEmpty] = useState(false);
+    const [selectedFood, setSelectedFood] = useState('');
+    const [selectedPart, setSelectedPart] = useState('');
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const spreadsheetId = '1qV6VTWDRTx0Znk-a9VTg7bZP78ANcNap8mMd_QP3jxc';
+                const range = 'Sheet1!A1:B100'; // Adjust range based on your data
+                const apiKey = 'AIzaSyDiyid8OuSDIAiM_DeTu0eri_zwmNPP6SA';
+
+                const response = await axios.get(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`
+                );
+
+                const data = response.data.values;
+                setFoodNames(() => data.map(row => row[0])); // Assuming data is in the first column
+                setPart(() => data.map(row => row[1]));
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
     const videoConstraints = {
         facingMode: { exact: "environment" },
         // width: 720,
@@ -37,10 +66,10 @@ const WebcamOverlay = () => {
         ctx.shadowBlur = 4;
 
         const textLines = [
-            `Item: ${overlayText.item}`,
-            `Verified weight: ${overlayText.verifiedWeight} kg`,
-            `Empty weight: ${overlayText.emptyWeight} kg`,
-            `Actual weight: ${overlayText.actualWeight} kg`,
+            `foodName: ${overlayText.foodName}`,
+            `Part: ${overlayText.part}`,
+            `Verified Weight: ${overlayText.verifiedWeight} kg`,
+            `is Empty : ${overlayText.isEmpty}`,
             `Timestamp: ${overlayText.timestamp}`,
         ];
 
@@ -72,10 +101,9 @@ const WebcamOverlay = () => {
     const uploadImage = async (file) => {
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('item', overlayText.item || "");
+        formData.append('foodName', overlayText.foodName || "");
         formData.append('verifiedWeight', overlayText.verifiedWeight || "0");
-        formData.append('emptyWeight', overlayText.emptyWeight || "0");
-        formData.append('actualWeight', overlayText.actualWeight || parseInt(overlayText.verifiedWeight) - parseInt(overlayText.emptyWeight));
+        formData.append('isEmpty', overlayText.isEmpty);
         formData.append('timestamp', new Date().toLocaleString());
 
         try {
@@ -96,10 +124,10 @@ const WebcamOverlay = () => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const newOverlayText = {
-            item: formData.get('item'),
+            foodName: formData.get('foodName'),
+            part: formData.get('part'),
             verifiedWeight: formData.get('verifiedWeight'),
-            emptyWeight: formData.get('emptyWeight'),
-            actualWeight: parseInt(formData.get('verifiedWeight')) - parseInt(formData.get('emptyWeight')),
+            isEmpty: formData.get('isEmpty'),
             timestamp: new Date().toLocaleString(),
         };
         setOverlayText(newOverlayText);
@@ -116,42 +144,59 @@ const WebcamOverlay = () => {
                 videoConstraints={videoConstraints}
                 style={styles.webcam}
                 forceScreenshotSourceSize={true}
+                screenshotQuality={1}
             />
             <canvas ref={canvasRef} width={720} height={1280} style={styles.canvas} />
             <div style={styles.overlay}>
-                <h1 style={styles.overlayText}>{`Item: ${overlayText.item}`}</h1>
+                <h1 style={styles.overlayText}>{`FoodName: ${overlayText.foodName}`}</h1>
                 <h1 style={styles.overlayText}>{`Verified weight: ${overlayText.verifiedWeight} kg`}</h1>
-                <h1 style={styles.overlayText}>{`Empty weight: ${overlayText.emptyWeight} kg`}</h1>
-                <h1 style={styles.overlayText}>{`Actual weight: ${overlayText.actualWeight} kg`}</h1>
+                <h1 style={styles.overlayText}>{`Is Empty: ${overlayText.isEmpty}`}</h1>
                 <h1 style={styles.overlayText}>{`Timestamp: ${overlayText.timestamp}`}</h1>
             </div>
             <button onClick={capture} style={styles.captureButton}>Capture & Save</button>
 
             <form onSubmit={handleSubmit} style={styles.form}>
-                <div style={styles.formGroup}>
+                <div >
                     <label>
-                        Item name:
-                        <input type="text" name="item" required style={styles.input} />
+                        <input type="checkbox" name="isEmpty" onChange={(e) => setIsEmpty(e.target.checked ? 'yes' : 'no')} />
+                        Is Empty
                     </label>
                 </div>
                 <div style={styles.formGroup}>
-                    <label>
-                        Verified weight:
-                        <input type="number" name="verifiedWeight" required style={styles.input} defaultValue={0} />
-                    </label>
+                    <h1>Food name</h1>
+                    <select style={styles.input}
+                        value={selectedFood}
+                        onChange={e => setSelectedFood(e.target.value)}
+                        name='foodName'
+                    >
+                        <option value="" disabled>
+                            Select an FoodName
+                        </option>
+                        {foodNames.map((option, index) => (
+                            <option key={index} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                    <h1>Part</h1>
+                    <select name="part" style={styles.input}
+                        value={selectedPart}
+                        onChange={e => setSelectedPart(e.target.value)}>
+                        <option value="" disabled>
+                            Part
+                        </option>
+                        {part.map((option, index) => (
+                            <option key={index} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div style={styles.formGroup}>
-                    <label>
-                        Empty weight:
-                        <input type="number" name="emptyWeight" style={styles.input} defaultValue={0} />
-                    </label>
+                    <h1>Verified Weight</h1>
+                    <input type="number" name="verifiedWeight" required style={styles.input} defaultValue={0} step={0.001} />
                 </div>
-                <div style={styles.formGroup}>
-                    <label>
-                        Actual weight:
-                        <input type="number" name="actualWeight" style={styles.input} />
-                    </label>
-                </div>
+
                 <button type="submit" style={styles.submitButton}>Update Text</button>
             </form>
 
