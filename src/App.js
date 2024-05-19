@@ -40,7 +40,7 @@ function App() {
   }, []);
   survey.onComplete.add(alertResults);
 
-  return (<div>
+  return (<div style={{ width: '740px', height: 'auto' }}>
     <Survey model={survey} />
     <WebcamOverlay photoInfo={photoInfo} />
   </div >)

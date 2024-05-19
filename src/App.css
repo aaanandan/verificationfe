@@ -37,12 +37,3 @@
     transform: rotate(360deg);
   }
 }
-
-
-.overlay {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  color: white;
-  font-size: 24px;
-}

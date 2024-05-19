@@ -16,8 +16,8 @@ const WebcamOverlay = () => {
 
     const videoConstraints = {
         facingMode: { exact: "environment" },
-        width: 720,
-        height: 1280
+        // width: 720,
+        // height: 1280
     };
 
     const capture = () => {
@@ -25,7 +25,7 @@ const WebcamOverlay = () => {
         const ctx = canvas.getContext('2d');
         const video = webcamRef.current.video;
 
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, 720, 1280); //, canvas.width, canvas.height
 
         ctx.fillStyle = 'white';
         ctx.font = '24px sans-serif';
@@ -75,7 +75,7 @@ const WebcamOverlay = () => {
         formData.append('item', overlayText.item || "");
         formData.append('verifiedWeight', overlayText.verifiedWeight || "0");
         formData.append('emptyWeight', overlayText.emptyWeight || "0");
-        formData.append('actualWeight', overlayText.actualWeight || "0");
+        formData.append('actualWeight', overlayText.actualWeight || parseInt(overlayText.verifiedWeight) - parseInt(overlayText.emptyWeight));
         formData.append('timestamp', new Date().toLocaleString());
 
         try {
@@ -99,7 +99,7 @@ const WebcamOverlay = () => {
             item: formData.get('item'),
             verifiedWeight: formData.get('verifiedWeight'),
             emptyWeight: formData.get('emptyWeight'),
-            actualWeight: formData.get('actualWeight'),
+            actualWeight: parseInt(formData.get('verifiedWeight')) - parseInt(formData.get('emptyWeight')),
             timestamp: new Date().toLocaleString(),
         };
         setOverlayText(newOverlayText);
@@ -115,7 +115,7 @@ const WebcamOverlay = () => {
                 height={1280}
                 videoConstraints={videoConstraints}
                 style={styles.webcam}
-            // forceScreenshotSourceSize={true}
+                forceScreenshotSourceSize={true}
             />
             <canvas ref={canvasRef} width={720} height={1280} style={styles.canvas} />
             <div style={styles.overlay}>
@@ -143,13 +143,13 @@ const WebcamOverlay = () => {
                 <div style={styles.formGroup}>
                     <label>
                         Empty weight:
-                        <input type="number" name="emptyWeight" required style={styles.input} defaultValue={0} />
+                        <input type="number" name="emptyWeight" style={styles.input} defaultValue={0} />
                     </label>
                 </div>
                 <div style={styles.formGroup}>
                     <label>
                         Actual weight:
-                        <input type="number" name="actualWeight" required style={styles.input} defaultValue={0} />
+                        <input type="number" name="actualWeight" style={styles.input} />
                     </label>
                 </div>
                 <button type="submit" style={styles.submitButton}>Update Text</button>
@@ -167,8 +167,8 @@ const WebcamOverlay = () => {
 const styles = {
     container: {
         position: 'relative',
-        width: '720px',
-        height: '1280px',
+        width: '100%',
+        height: '100%',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
@@ -224,12 +224,15 @@ const styles = {
         border: '2px solid #fff',
     },
     capturedImage: {
-        width: 'auto%',
-        height: '100%',
+        // width: 'auto%',
+        // height: '100%',
+        width: '720px',
+        height: '1280px',
+
     },
     form: {
         // position: 'absolute',
-        bottom: 80,
+        bottom: 20,
         left: '50%',
         // transform: 'translateX(-50%)',
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -246,8 +249,8 @@ const styles = {
     input: {
         marginLeft: '10px',
         padding: '5px',
-        fontSize: '16px',
-        width: '300px'
+        fontSize: '30px',
+        width: '60%'
     },
     submitButton: {
         padding: '10px 20px',
