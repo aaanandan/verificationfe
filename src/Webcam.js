@@ -10,13 +10,13 @@ const WebcamOverlay = () => {
         foodName: '',
         part: '-',
         verifiedWeight: '0',
-        isEmpty: '0',
+        isEmpty: 'Yes',
         timestamp: '0',
     });
 
     const [foodNames, setFoodNames] = useState([]);
     const [part, setPart] = useState([]);
-    const [isEmpty, setIsEmpty] = useState(false);
+    const [isEmpty, setIsEmpty] = useState('No');
     const [selectedFood, setSelectedFood] = useState('');
     const [selectedPart, setSelectedPart] = useState('');
 
@@ -127,7 +127,7 @@ const WebcamOverlay = () => {
             foodName: formData.get('foodName'),
             part: formData.get('part'),
             verifiedWeight: formData.get('verifiedWeight'),
-            isEmpty: formData.get('isEmpty'),
+            isEmpty: formData.get('isEmpty') ? 'Yes' : 'No',
             timestamp: new Date().toLocaleString(),
         };
         setOverlayText(newOverlayText);
@@ -158,7 +158,7 @@ const WebcamOverlay = () => {
             <form onSubmit={handleSubmit} style={styles.form}>
                 <div >
                     <label>
-                        <input type="checkbox" name="isEmpty" onChange={(e) => setIsEmpty(e.target.checked ? 'yes' : 'no')} />
+                        <input type="checkbox" name="isEmpty" value={isEmpty} onChange={(e) => setIsEmpty(e.target.checked ? 'Yes' : 'No')} />
                         Is Empty
                     </label>
                 </div>
