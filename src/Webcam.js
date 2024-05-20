@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import axios from 'axios';
+import { createWorker } from 'tesseract.js';
 
 const WebcamOverlay = () => {
     const webcamRef = useRef(null);
@@ -19,7 +20,7 @@ const WebcamOverlay = () => {
     const [isEmpty, setIsEmpty] = useState('No');
     const [selectedFood, setSelectedFood] = useState('');
     const [selectedPart, setSelectedPart] = useState('');
-
+    const [verifiedWeight, setverifiedWeight] = useState(0.0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -134,6 +135,22 @@ const WebcamOverlay = () => {
         setOverlayText(newOverlayText);
     };
 
+    const regonizeWeight = (e) => {
+        (async () => {
+
+            const rectangle = { left: 0, top: 800, width: 720, height: 250 };
+            const img = webcamRef.current.getScreenshot();
+            const worker = await createWorker('eng');
+            await worker.setParameters({
+                tessedit_char_whitelist: '.0123456789',
+            });
+            const ret = await worker.recognize(img, rectangle).catch(console.log(e));
+            console.log(ret.data.text);
+            setverifiedWeight(ret.data.text);
+            await worker.terminate();
+        })().catch(e => { console.log(e) });
+
+    }
     return (
         <div style={styles.container}>
             <Webcam
@@ -157,7 +174,7 @@ const WebcamOverlay = () => {
             </div>
             <button onClick={capture} style={styles.captureButton}>Capture & Save</button>
 
-            <form onSubmit={handleSubmit} style={styles.form}>
+            <form onSubmit={handleSubmit} style={styles.form} >
 
                 <div style={styles.formGroup}>
                     <input type="checkbox" id="isEmpty" name="isEmpty" value={isEmpty} onChange={(e) => setIsEmpty(e.target.checked ? 'Yes' : 'No')} />
@@ -190,8 +207,9 @@ const WebcamOverlay = () => {
                             </option>
                         ))}
                     </select>
-                    <h1>Verified Weight</h1>
-                    <input type="number" name="verifiedWeight" required style={styles.input} defaultValue={0} step={0.001} />
+                    <h1>Verified Weight<button style={styles.readButton} onClick={regonizeWeight}>Read</button></h1>
+
+                    <input type="text" name="verifiedWeight" required style={styles.input} defaultValue={0} value={verifiedWeight} />
                 </div>
                 <button type="submit" style={styles.submitButton}>Update Text</button>
             </form>
@@ -315,6 +333,11 @@ const styles = {
         height: '100px',
         marginBottom: 20
     },
+
+    readButton: {
+        height: '50px',
+        fontSize: '30px'
+    }
 };
 
 export default WebcamOverlay;
