@@ -8,9 +8,9 @@ const WebcamOverlay = () => {
     const [capturedImage, setCapturedImage] = useState(null);
     const [overlayText, setOverlayText] = useState({
         foodName: '',
-        part: '-',
+        part: '',
         verifiedWeight: '0',
-        isEmpty: 'Yes',
+        isEmpty: 'No',
         timestamp: '0',
     });
 
@@ -124,8 +124,8 @@ const WebcamOverlay = () => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const newOverlayText = {
-            foodName: formData.get('foodName'),
-            part: formData.get('part'),
+            foodName: formData.get('foodName') || '',
+            part: formData.get('part') || '',
             verifiedWeight: formData.get('verifiedWeight'),
             isEmpty: formData.get('isEmpty') ? 'Yes' : 'No',
             timestamp: new Date().toLocaleString(),
@@ -149,6 +149,7 @@ const WebcamOverlay = () => {
             <canvas ref={canvasRef} width={720} height={1280} style={styles.canvas} />
             <div style={styles.overlay}>
                 <h1 style={styles.overlayText}>{`FoodName: ${overlayText.foodName}`}</h1>
+                <h1 style={styles.overlayText}>{`Part: ${overlayText.part}`}</h1>
                 <h1 style={styles.overlayText}>{`Verified weight: ${overlayText.verifiedWeight} kg`}</h1>
                 <h1 style={styles.overlayText}>{`Is Empty: ${overlayText.isEmpty}`}</h1>
                 <h1 style={styles.overlayText}>{`Timestamp: ${overlayText.timestamp}`}</h1>
@@ -156,13 +157,10 @@ const WebcamOverlay = () => {
             <button onClick={capture} style={styles.captureButton}>Capture & Save</button>
 
             <form onSubmit={handleSubmit} style={styles.form}>
-                <div >
-                    <label>
-                        <input type="checkbox" name="isEmpty" value={isEmpty} onChange={(e) => setIsEmpty(e.target.checked ? 'Yes' : 'No')} />
-                        Is Empty
-                    </label>
-                </div>
+
                 <div style={styles.formGroup}>
+                    <input type="checkbox" id="isEmpty" name="isEmpty" value={isEmpty} onChange={(e) => setIsEmpty(e.target.checked ? 'Yes' : 'No')} />
+                    <label for="isEmpty" style={styles.chekBoxLabel}> Is Empty</label>
                     <h1>Food name</h1>
                     <select style={styles.input}
                         value={selectedFood}
@@ -191,12 +189,9 @@ const WebcamOverlay = () => {
                             </option>
                         ))}
                     </select>
-                </div>
-                <div style={styles.formGroup}>
                     <h1>Verified Weight</h1>
                     <input type="number" name="verifiedWeight" required style={styles.input} defaultValue={0} step={0.001} />
                 </div>
-
                 <button type="submit" style={styles.submitButton}>Update Text</button>
             </form>
 
@@ -240,6 +235,15 @@ const styles = {
         alignItems: 'center',
         pointerEvents: 'none',
     },
+
+    chekBoxLabel: {
+        color: 'white',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+        left: '50%'
+    },
+
     overlayText: {
         color: 'white',
         fontSize: '24px',
@@ -250,23 +254,23 @@ const styles = {
     captureButton: {
         // position: 'absolute',
         margin: 20,
-        left: '50%',
+        // left: '50%',
         // transform: 'translateX(-50%)',
-        padding: '10px 20px',
+        // padding: '10px 20px',
         fontSize: '30px',
         backgroundColor: '#ff0100',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
-        width: '80%',
-        height: '10%'
+        width: '400px',
+        height: '100px'
     },
     capturedImageContainer: {
         // position: 'absolute',
         top: 20,
         right: 20,
-        border: '2px solid #fff',
+        border: '2px solid #ff0000',
     },
     capturedImage: {
         // width: 'auto%',
@@ -278,7 +282,7 @@ const styles = {
     form: {
         // position: 'absolute',
         bottom: 20,
-        left: '50%',
+        // left: '50%',
         // transform: 'translateX(-50%)',
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         padding: '20px',
@@ -286,27 +290,29 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'left',
     },
     formGroup: {
         marginBottom: '10px',
     },
     input: {
-        marginLeft: '10px',
+        // marginLeft: '10px',
         padding: '5px',
         fontSize: '30px',
-        width: '60%'
+        width: '80%'
     },
     submitButton: {
-        padding: '10px 20px',
+        top: 20,
+        position: 'relative',
         fontSize: '30px',
         backgroundColor: '#28a745',
         color: 'white',
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
-        width: '80%',
-        height: '10%'
+        width: '400px',
+        height: '100px',
+        marginBottom: 20
     },
 };
 
