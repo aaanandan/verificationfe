@@ -20,7 +20,7 @@ const WebcamOverlay = () => {
     const [isEmpty, setIsEmpty] = useState('No');
     const [selectedFood, setSelectedFood] = useState('');
     const [selectedPart, setSelectedPart] = useState('');
-    const [verifiedWeight, setverifiedWeight] = useState(0.0);
+    const [verifiedWeight, setverifiedWeight] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,7 +55,7 @@ const WebcamOverlay = () => {
         const ctx = canvas.getContext('2d');
         const video = webcamRef.current.video;
 
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); //
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         ctx.fillStyle = 'white';
         ctx.font = '24px sans-serif';
@@ -136,17 +136,17 @@ const WebcamOverlay = () => {
     };
 
     const regonizeWeight = (e) => {
+        console.log('1');
         (async () => {
-
+            console.log('2');
             const rectangle = { left: 0, top: 800, width: 720, height: 250 };
             const img = webcamRef.current.getScreenshot();
             const worker = await createWorker('eng');
-            await worker.setParameters({
-                tessedit_char_whitelist: '.0123456789',
-            });
+            // await worker.setParameters({
+            //     // tessedit_char_whitelist: '0123456789.',
+            // });
             const ret = await worker.recognize(img, rectangle).catch(console.log(e));
-            console.log(ret.data.text);
-            setverifiedWeight(ret.data.text);
+            setverifiedWeight(() => ret.data.text);
             await worker.terminate();
         })().catch(e => { console.log(e) });
 
@@ -183,8 +183,7 @@ const WebcamOverlay = () => {
                     <select style={styles.input}
                         value={selectedFood}
                         onChange={e => setSelectedFood(e.target.value)}
-                        name='foodName'
-                    >
+                        name='foodName'>
                         <option value="" disabled>
                             Select an FoodName
                         </option>
@@ -207,9 +206,8 @@ const WebcamOverlay = () => {
                             </option>
                         ))}
                     </select>
-                    <h1>Verified Weight<button style={styles.readButton} onClick={regonizeWeight}>Read</button></h1>
-
-                    <input type="text" name="verifiedWeight" required style={styles.input} defaultValue={0} value={verifiedWeight} />
+                    <h1>Verified Weight<button style={styles.readButton} onClick={(e) => regonizeWeight(e)}>Read</button></h1>
+                    <input type="text" name="verifiedWeight" required style={styles.input} value={verifiedWeight} onChange={e => setverifiedWeight(e.target.value)} />
                 </div>
                 <button type="submit" style={styles.submitButton}>Update Text</button>
             </form>
