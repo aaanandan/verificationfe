@@ -102,6 +102,7 @@ const WebcamOverlay = () => {
         const formData = new FormData();
         formData.append('image', file);
         formData.append('foodName', overlayText.foodName || "");
+        formData.append('part', overlayText.part || "");
         formData.append('verifiedWeight', overlayText.verifiedWeight || "0");
         formData.append('isEmpty', overlayText.isEmpty);
         formData.append('timestamp', new Date().toLocaleString());
