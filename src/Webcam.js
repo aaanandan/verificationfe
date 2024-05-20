@@ -45,8 +45,8 @@ const WebcamOverlay = () => {
     }, []);
     const videoConstraints = {
         facingMode: { exact: "environment" },
-        // width: 720,
-        // height: 1280
+        width: 1280,
+        height: 720
     };
 
     const capture = () => {
@@ -54,7 +54,7 @@ const WebcamOverlay = () => {
         const ctx = canvas.getContext('2d');
         const video = webcamRef.current.video;
 
-        ctx.drawImage(video, 0, 0, 720, 1280); //, canvas.width, canvas.height
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); //
 
         ctx.fillStyle = 'white';
         ctx.font = '24px sans-serif';
@@ -143,7 +143,7 @@ const WebcamOverlay = () => {
                 height={1280}
                 videoConstraints={videoConstraints}
                 style={styles.webcam}
-                forceScreenshotSourceSize={true}
+                // forceScreenshotSourceSize={true}
                 screenshotQuality={1}
             />
             <canvas ref={canvasRef} width={720} height={1280} style={styles.canvas} />
@@ -215,7 +215,7 @@ const styles = {
     },
     webcam: {
         // position: 'absolute',
-        margin: 20,
+        // margin: 20,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'
@@ -268,8 +268,8 @@ const styles = {
     },
     capturedImageContainer: {
         // position: 'absolute',
-        top: 20,
-        right: 20,
+        // top: 20,
+        // right: 20,
         border: '2px solid #ff0000',
     },
     capturedImage: {
